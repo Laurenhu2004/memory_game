@@ -17,6 +17,7 @@ const cardImages = [
 function App() {
   const [cards, setCards] = useState([])
   const [turns, setTurns] = useState(0)
+  const [bestScore, setBestScore] = useState(0) // Initialize bestScore to 0
   const [choiceOne, setChoiceOne] = useState(null)
   const [choiceTwo, setChoiceTwo] = useState(null)
   const [disabled, setDisabled] = useState(false)
@@ -30,12 +31,17 @@ function App() {
     setChoiceOne(null)
     setChoiceTwo(null)
     setCards(shuffledCards)
+    
+    // Check if this game is better than the previous best
+    if (turns > 0 && (bestScore === 0 || turns < bestScore)) {
+      setBestScore(turns) // Update best score
+    }
+    
     setTurns(0)
   }
 
   // handle a choice
   const handleChoice = (card) => {
-    console.log(card)
     choiceOne ? setChoiceTwo(card) : setChoiceOne(card)
   }
 
@@ -58,7 +64,6 @@ function App() {
       } else {
         setTimeout(() => resetTurn(), 1000)
       }
-
     }
   }, [choiceOne, choiceTwo])
 
@@ -70,7 +75,7 @@ function App() {
     setDisabled(false)
   }
 
-  // start new game automagically
+  // start new game automatically
   useEffect(() => {
     shuffleCards()
   }, [])
@@ -93,6 +98,7 @@ function App() {
         </div>
       </div>
       <h3>Turns: {turns}</h3>
+      <h3>Best Score (Fewest Turns): {bestScore}</h3> {/* Display best score (even if 0) */}
     </div>
   );
 }
